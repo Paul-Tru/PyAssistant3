@@ -1,13 +1,15 @@
 from PyPDF2 import PdfReader, PdfWriter, PdfMerger
 
 
-def get_meta(path):
+def get_meta(path, struc):
     with open(path, 'rb') as f:
         pdf = PdfReader(f)
-        info = pdf.getDocumentInfo()
-        nop = pdf.getNumPages()
-    print(info)
-    print(nop)
+        info = pdf.metadata
+        nop = len(pdf.pages)
+    if struc == "info":
+        return info
+    if struc == "nop":
+        return nop
 
 
 def extract_text(path):
@@ -21,9 +23,9 @@ def extract_text(path):
 def split_pdf(path):
     with open(path, 'rb') as f:
         pdf = PdfReader(f)
-        for page in range(pdf.numPages()):
+        for page in range(pdf.numPages):
             writer = PdfWriter()
-            writer.addPage(pdf.pages(page))
+            writer.addPage(pdf.pages[page])
             with open(f"{page}.pdf", "wb") as f_out:
                 writer.write(f_out)
 
@@ -32,8 +34,8 @@ def merge_pdf(input_paths, output_path):
     writer = PdfWriter()
     for i in input_paths:
         pdf_reader = PdfReader(i)
-        for page in range(pdf_reader.NumPages()):
-            writer.addPage(pdf_reader.pages(page))
+        for page in range(pdf_reader.numPages):
+            writer.addPage(pdf_reader.pages[page])
     with open(output_path, "wb") as f_out:
         writer.write(f_out)
 
