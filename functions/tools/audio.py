@@ -1,4 +1,6 @@
 from pydub import AudioSegment
+import sounddevice as sd
+from scipy.io.wavfile import write
 
 
 def convert_ogg_to_mp3(ogg_input_path):
@@ -8,4 +10,9 @@ def convert_ogg_to_mp3(ogg_input_path):
 
 
 def record_audio():
-    pass
+    fs = 44100  # Sample rate
+    seconds = 3  # Duration of recording
+
+    myrecording = sd.rec(int(seconds * fs), samplerate=fs, channels=2)
+    sd.wait()  # Wait until recording is finished
+    write('output.wav', fs, myrecording)  # Save as WAV file
